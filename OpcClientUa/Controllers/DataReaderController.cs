@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Opc.Ua.Client;
-using OpcClientUa.Data;
+using OpcClientUa.Configs;
 using OpcClientUa.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,6 @@ namespace OpcClientUa.Controllers
     [ApiController]
     public class DataReaderController : ControllerBase
     {
-
         private readonly IConfiguration _configuration;
 
         public DataReaderController(IConfiguration configuration)
@@ -23,12 +22,13 @@ namespace OpcClientUa.Controllers
 
         public async Task<IList<OpcItem>> GetAsync()
         {
-            Session session = await OpcData.GetOpcDataAsync(_configuration.GetSection("EndpointUrl").Value);
+            Session session = await SessionConfig.GetOpcSessionAsync(_configuration.GetSection("EndpointUrl").Value);
             return new List<string>
                     {
                         "Data Type Examples.16 Bit Device.R Registers.Boolean2",
                         "Data Type Examples.16 Bit Device.R Registers.Double2",
-                        "Data Type Examples.16 Bit Device.R Registers.DWord2"
+                        "Data Type Examples.16 Bit Device.R Registers.DWord2",
+                        "Simulation Examples.Functions.Ramp1"
                     }
                     .Select(i =>
                         {
@@ -38,7 +38,7 @@ namespace OpcClientUa.Controllers
                                 ItemId = i,
                                 Value = dataValue.Value,
                                 Quality = dataValue.StatusCode.ToString(),
-                                TimeStamp = dataValue.SourceTimestamp.ToString("yyyy-MM-dd HH:mm:ss")
+                                TimeStamp = dataValue.SourceTimestamp.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")
                             };
                         })
                     .ToList();

@@ -6,12 +6,12 @@ using OpcClientUa.Configs;
 using System;
 using System.Threading.Tasks;
 
-namespace OpcClientUa.Data
+namespace OpcClientUa.Configs
 {
-    public class OpcData
+    public class SessionConfig
     {
         private const string ApplicationName = "UA Client";
-        public static async Task<Session> GetOpcDataAsync(string EndpointUrl)
+        public static async Task<Session> GetOpcSessionAsync(string EndpointUrl)
         {
             var config = await ApplicationConfig.Load(ApplicationName);
             var application = new ApplicationInstance

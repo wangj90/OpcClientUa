@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using OpcClientUa.Middleware;
+using OpcClientUa.SignalR;
+using System.Collections.Generic;
 
 namespace OpcClientUa
 {
@@ -26,6 +22,7 @@ namespace OpcClientUa
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,8 +38,24 @@ namespace OpcClientUa
                 app.UseHsts();
             }
 
+            app.UseStaticFiles();
+
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseSignalR(routes => { routes.MapHub<OpcHub>("/opcHub"); });
+
+            app.UseOpcNotification(new OpcPointOptions
+            {
+                OpcPoints = new List<string>
+                {
+                    "Data Type Examples.16 Bit Device.R Registers.Boolean2",
+                    "Data Type Examples.16 Bit Device.R Registers.Double2",
+                    "Data Type Examples.16 Bit Device.R Registers.DWord2",
+                    "Simulation Examples.Functions.Ramp1"
+                }
+            });
+
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
