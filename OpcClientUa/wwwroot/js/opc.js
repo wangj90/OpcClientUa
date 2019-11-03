@@ -3,6 +3,23 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/opcHub").build();
 
 connection.on("OpcDataUpdate", function (opcItem) {
+    /**
+     * 百度语音
+     * */
+    //var url = 'http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&per=3&spd=5&text=123';
+    //var audio = new Audio();
+    //audio.src = url;
+    //audio.play();
+
+    /**
+     * html语音
+     * */
+    //speechSynthesis.speak(new SpeechSynthesisUtterance("123"));
+
+    if (Number(opcItem.value) > 10) {
+        speechSynthesis.speak(new SpeechSynthesisUtterance(opcItem.itemId + "报警，报警值为" + opcItem.value));
+    }
+
     var itemDiv = $('[id="' + opcItem.itemId + '"]');
     //id对应的元素存在，则只更新数值、质量、时间
     //id对应的元素不存在，则新增元素及其自元素
@@ -11,35 +28,39 @@ connection.on("OpcDataUpdate", function (opcItem) {
         itemDiv.find('.opcQuality').text(opcItem.quality);
         itemDiv.find('.opcTimeStamp').text(opcItem.timeStamp);
     } else {
-        itemDiv = $('<div id="' + opcItem.itemId + '"></div>');
-        itemDiv.addClass('card').addClass('bg-success').addClass('text-white');
-        var cardHeader = $('<h4></h4>');
-        cardHeader.addClass('card-header').addClass('opcItemId');
-        cardHeader.text(opcItem.itemId);
-        itemDiv.append(cardHeader);
-        var cardBody = $('<div></div>');
-        cardBody.addClass('card-body');
-        var cardText = $('<div></div>');
-        cardText.addClass('card-text');
-        var row = $('<div></div>');
-        row.addClass('row');
-        var opcValue = $('<h5></h5>');
-        opcValue.addClass('col-6').addClass('opcValue');
-        opcValue.text(opcItem.value);
-        var opcQuality = $('<h5></h5>');
-        opcQuality.addClass('col-6').addClass('opcQuality');
-        opcQuality.text(opcItem.quality);
-        row.append(opcValue);
-        row.append(opcQuality);
-        var div = $('<div></div>');
-        var opcTimeStamp = $('<h5></h5>');
-        opcTimeStamp.addClass('opcTimeStamp');
-        opcTimeStamp.text(opcItem.timeStamp);
-        div.append(opcTimeStamp);
-        cardText.append(row);
-        cardText.append(div);
-        cardBody.append(cardText);
-        itemDiv.append(cardBody);
+        var opcValue = $('<h5></h5>')
+            .addClass('col-6 opcValue')
+            .text(opcItem.value);
+        var opcQuality = $('<h5></h5>')
+            .addClass('col-6 opcQuality')
+            .text(opcItem.quality);
+        var row = $('<div></div>')
+            .addClass('row')
+            .append(opcValue, opcQuality);
+
+        var opcTimeStamp = $('<h5></h5>')
+            .addClass('opcTimeStamp')
+            .text(opcItem.timeStamp);
+        var div = $('<div></div>')
+            .append(opcTimeStamp);
+
+        var cardText = $('<div></div>')
+            .addClass('card-text')
+            .append(row, div);
+
+        var cardBody = $('<div></div>')
+            .addClass('card-body')
+            .append(cardText);
+
+        var cardHeader = $('<h4></h4>')
+            .addClass('card-header opcItemId')
+            .text(opcItem.itemId);
+
+        itemDiv = $('<div></div>')
+            .attr('id', opcItem.itemId)
+            .addClass('card bg-success text-white')
+            .append(cardHeader, cardBody);
+
         $('.card-deck').append(itemDiv);
     }
 });

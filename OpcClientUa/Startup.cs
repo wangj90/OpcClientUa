@@ -48,10 +48,11 @@ namespace OpcClientUa
             {
                 OpcPoints = new List<string>
                 {
-                    "Data Type Examples.16 Bit Device.R Registers.Boolean2",
-                    "Data Type Examples.16 Bit Device.R Registers.Double2",
-                    "Data Type Examples.16 Bit Device.R Registers.DWord2",
-                    "Simulation Examples.Functions.Ramp1"
+                    //"Data Type Examples.16 Bit Device.R Registers.Boolean2",
+                    //"Data Type Examples.16 Bit Device.R Registers.Double2",
+                    //"Data Type Examples.16 Bit Device.R Registers.DWord2",
+                    //"Simulation Examples.Functions.Ramp1"
+                    "Simulation Examples.Functions.aaa"
                 }
             });
 
