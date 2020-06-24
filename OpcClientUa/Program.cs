@@ -13,6 +13,8 @@ namespace OpcClientUa
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseKestrel()
+                .UseUrls("http://*:8000")
                 .UseStartup<Startup>();
     }
 }
