@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using OpcClientUa.Models;
+using System.Collections.Generic;
 
 namespace OpcClientUa.Middleware
 {
     public class OpcPointOptions
     {
-        public IList<string> OpcPoints { get; set; }
+        public IList<OpcSetting> OpcPoints { get; set; }
     }
 }

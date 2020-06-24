@@ -14,13 +14,14 @@ connection.on("OpcDataUpdate", function (opcItem) {
     /**
      * html语音
      * */
-    //speechSynthesis.speak(new SpeechSynthesisUtterance("123"));
-
-    if (Number(opcItem.value) > 10) {
+    var itemDiv = $('[id="' + opcItem.itemId + '"]');
+    var value = Number(opcItem.value);
+    if (itemDiv.find('.opcValue').text() != opcItem.value &&
+        ((null != opcItem.highAlarm && value > opcItem.highAlarm)
+            || (null != opcItem.highAlarm && value < opcItem.lowAlarm))
+    ) {
         speechSynthesis.speak(new SpeechSynthesisUtterance(opcItem.itemId + "报警，报警值为" + opcItem.value));
     }
-
-    var itemDiv = $('[id="' + opcItem.itemId + '"]');
     //id对应的元素存在，则只更新数值、质量、时间
     //id对应的元素不存在，则新增元素及其自元素
     if (itemDiv.length > 0) {

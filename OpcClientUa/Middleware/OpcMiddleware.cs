@@ -42,12 +42,12 @@ namespace OpcClientUa.Middleware
             Session session = SessionConfig.GetOpcSessionAsync(_configuration.GetSection("EndpointUrl").Value).Result;
             Subscription subscription = new Subscription(session.DefaultSubscription);
             IEnumerable<MonitoredItem> items = _options.OpcPoints
-                .Select(i =>
+                .Select(setting =>
                 {
                     MonitoredItem item = new MonitoredItem
                     {
-                        DisplayName = i,
-                        StartNodeId = "ns=2;s=" + i
+                        DisplayName = setting.ItemId,
+                        StartNodeId = "ns=2;s=" + setting.ItemId
                     };
                     item.Notification += (MonitoredItem monitoredItem, MonitoredItemNotificationEventArgs e) =>
                     {
@@ -56,10 +56,12 @@ namespace OpcClientUa.Middleware
                             var value = notification.Value;
                             OpcItem opcItem = new OpcItem
                             {
-                                ItemId = monitoredItem.DisplayName,
+                                ItemId = monitoredItem.DisplayName.Substring(30),
                                 Value = value.Value,
                                 Quality = value.StatusCode.ToString(),
-                                TimeStamp = value.SourceTimestamp.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")
+                                TimeStamp = value.SourceTimestamp.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss"),
+                                HighAlarm = setting.HighAlarm,
+                                LowAlarm = setting.LowAlarm
                             };
                             _hubContext.Clients.All.OpcDataUpdate(opcItem);
                         }

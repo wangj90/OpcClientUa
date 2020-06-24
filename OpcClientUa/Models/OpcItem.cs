@@ -18,5 +18,13 @@
         /// Item获取时间
         /// </summary>
         public object TimeStamp { get; internal set; }
+        /// <summary>
+        /// 高报警值
+        /// </summary>
+        public int? HighAlarm { get; set; }
+        /// <summary>
+        /// 低报警值
+        /// </summary>
+        public int? LowAlarm { get; set; }
     }
 }
